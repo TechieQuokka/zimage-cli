@@ -1,8 +1,8 @@
 # Z-Image Turbo Generator
 
-RTX 3060 12GB에 최적화된 텍스트-이미지 생성 CLI
+Text-to-image generation CLI optimized for RTX 3060 12GB
 
-## 아키텍처
+## Architecture
 
 ```
 "a beautiful sunset"
@@ -10,13 +10,13 @@ RTX 3060 12GB에 최적화된 텍스트-이미지 생성 CLI
         ▼
 ┌───────────────────┐
 │  LLM (Qwen 3 4B)  │  Text Encoder
-│  qwen_3_4b-Q8_0   │  프롬프트 → 임베딩
+│  qwen_3_4b-Q8_0   │  Prompt → Embedding
 └───────────────────┘
         │
         ▼
 ┌───────────────────┐
 │  Diffusion Model  │  Denoising
-│  z_image_turbo    │  노이즈 → Latent
+│  z_image_turbo    │  Noise → Latent
 └───────────────────┘
         │
         ▼
@@ -29,16 +29,16 @@ RTX 3060 12GB에 최적화된 텍스트-이미지 생성 CLI
     output.png
 ```
 
-## 요구사항
+## Requirements
 
 - Python 3.10+
-- [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) (CUDA 빌드)
-- GGUF 모델 파일
+- [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) (CUDA build)
+- GGUF model files
 
-## 설치
+## Installation
 
 ```bash
-# 1. stable-diffusion.cpp 빌드
+# 1. Build stable-diffusion.cpp
 cd /path/to/Z-Image
 git clone --recursive https://github.com/leejet/stable-diffusion.cpp
 cd stable-diffusion.cpp
@@ -46,69 +46,69 @@ mkdir build && cd build
 cmake .. -DSD_CUBLAS=ON
 cmake --build . --config Release
 
-# 2. 모델 다운로드
+# 2. Download models
 cd ../gencli
 bash download_zimage_files.sh
 ```
 
-## 사용법
+## Usage
 
 ```bash
-# 기본 사용
+# Basic usage
 python generate_zimage.py "a beautiful sunset"
 
-# 옵션
+# With options
 python generate_zimage.py "cat on the sofa" \
-    -W 768 -H 768 \      # 해상도
-    --steps 8 \          # 추론 스텝 (4-8)
-    --seed 42 \          # 시드
-    -n "blurry"          # 네거티브 프롬프트
+    -W 768 -H 768 \      # Resolution
+    --steps 8 \          # Inference steps (4-8)
+    --seed 42 \          # Seed
+    -n "blurry"          # Negative prompt
 ```
 
-### 옵션
+### Options
 
-| 옵션 | 설명 | 기본값 |
-|------|------|--------|
-| `-W`, `--width` | 이미지 너비 | 512 |
-| `-H`, `--height` | 이미지 높이 | 512 |
-| `-s`, `--steps` | 추론 스텝 | 8 |
-| `-g`, `--cfg-scale` | CFG 스케일 | 1.0 |
-| `--seed` | 랜덤 시드 | random |
-| `-n`, `--negative` | 네거티브 프롬프트 | - |
-| `-o`, `--output` | 출력 파일명 | auto |
-| `-b`, `--batch` | 배치 수 | 1 |
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-W`, `--width` | Image width | 512 |
+| `-H`, `--height` | Image height | 512 |
+| `-s`, `--steps` | Inference steps | 8 |
+| `-g`, `--cfg-scale` | CFG scale | 1.0 |
+| `--seed` | Random seed | random |
+| `-n`, `--negative` | Negative prompt | - |
+| `-o`, `--output` | Output filename | auto |
+| `-b`, `--batch` | Batch count | 1 |
 
-## 프로젝트 구조
+## Project Structure
 
 ```
 gencli/
-├── config.py            # 경로 및 파라미터 설정
-├── generator.py         # ZImageGenerator 클래스
-├── cli.py               # CLI 인터페이스
-├── generate_zimage.py   # 진입점
+├── config.py            # Path and parameter configuration
+├── generator.py         # ZImageGenerator class
+├── cli.py               # CLI interface
+├── generate_zimage.py   # Entry point
 ├── download_zimage_files.sh
 ├── requirements.txt
-└── outputs/             # 생성된 이미지
+└── outputs/             # Generated images
 ```
 
-## 모델 파일
+## Model Files
 
 ```
 models/gguf/
-├── z_image_turbo-Q8_0.gguf   # Diffusion (Q8 양자화)
+├── z_image_turbo-Q8_0.gguf   # Diffusion (Q8 quantized)
 ├── ae-f16.gguf               # VAE (FP16)
-└── qwen_3_4b-Q8_0.gguf       # Text Encoder (Q8 양자화)
+└── qwen_3_4b-Q8_0.gguf       # Text Encoder (Q8 quantized)
 ```
 
-## 성능
+## Performance
 
-| 항목 | 값 |
-|------|-----|
-| 해상도 | 512x512 |
-| 추론 스텝 | 4-8 |
-| 생성 시간 | ~2-4초 |
-| VRAM 사용 | ~8-10GB |
+| Metric | Value |
+|--------|-------|
+| Resolution | 512x512 |
+| Inference steps | 4-8 |
+| Generation time | ~2-4s |
+| VRAM usage | ~8-10GB |
 
-## 라이선스
+## License
 
 Educational and research purposes only.
