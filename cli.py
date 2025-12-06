@@ -1,6 +1,7 @@
 """Z-Image CLI interface"""
 
 import argparse
+import random
 import time
 from pathlib import Path
 
@@ -63,7 +64,7 @@ Examples:
         print(f"Size:      {params.width}x{params.height}")
         print(f"Steps:     {params.steps}")
         print(f"CFG Scale: {params.cfg_scale}")
-        print(f"Seed:      {params.seed or 'random'}")
+        print(f"Seed:      {params.seed}")
         if params.negative_prompt:
             print(f"Negative:  {params.negative_prompt}")
         if params.batch_count > 1:
@@ -75,6 +76,9 @@ Examples:
         """Run CLI. Returns exit code."""
         args = self.parse_args()
 
+        # Use provided seed or generate random int32 positive value
+        seed = args.seed if args.seed is not None else random.randint(1, 2**31 - 1)
+
         params = GenerationParams(
             prompt=args.prompt,
             output=args.output or self.generate_output_path(args.prompt, args.batch),
@@ -82,7 +86,7 @@ Examples:
             height=args.height,
             steps=args.steps,
             cfg_scale=args.cfg_scale,
-            seed=args.seed,
+            seed=seed,
             negative_prompt=args.negative,
             batch_count=args.batch,
         )
